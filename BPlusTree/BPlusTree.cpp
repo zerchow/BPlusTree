@@ -2,12 +2,12 @@
 
 int main()
 {
-	cout << sizeof(new Data) << endl;
-	int i = 100;
-	int *p1 = &i;
-	int *p2 = &i;
-	cout << (p1 == p2) << endl;
-	cout << p1 << endl;
-	cout << p2 << endl;
+	Data dd = {1,"",2};
+	cout<<sizeof(dd)<<endl;
+	cout << sizeof(new BPlusTreeData()) << endl;
+	cout << sizeof(new BPlusTreeNode()) << endl;
+	int limit = 20 * 1024 * 1024;
+	for(int i = 0; i < limit; i ++)
+		cout<<i<<endl;
 	return 0;
 }
