@@ -2,12 +2,23 @@
 
 int main()
 {
-	Data dd = {1,"",2};
-	cout<<sizeof(dd)<<endl;
-	cout << sizeof(new BPlusTreeData()) << endl;
-	cout << sizeof(new BPlusTreeNode()) << endl;
-	int limit = 20 * 1024 * 1024;
-	for(int i = 0; i < limit; i ++)
-		cout<<i<<endl;
+	BPlusTree * tree = new BPlusTree();
+	tree->insert({ 10, "" });
+	tree->insert({ 11, "" });
+	tree->insert({ 12, "" });
+	tree->insert({ 13, "" });
+	tree->insert({ 14, "" });
+	tree->insert({ 15, "" });
+	BPlusTreeNode * root = tree->getroot();
+	int rootnum = root->index_num;
+	for (int i = 0; i < rootnum; i++)
+		cout << root->indexs[i] << " ";
+	cout << endl;
+	BPlusTreeData * leaf = (BPlusTreeData*)root->pointers[0];
+	while (leaf)
+	{
+		cout << leaf->index_num << endl;
+		leaf = leaf->next;
+	}
 	return 0;
 }
