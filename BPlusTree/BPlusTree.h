@@ -38,6 +38,7 @@ class BPlusTree
 {
 private:
 	BPlusTreeNode * root;
+	BPlusTreeData * start;
 	BPlusTreeBase * find_leaf(int index)
 	{
 		BPlusTreeBase * finder = this->root;
@@ -97,6 +98,50 @@ private:
 		BPlusTreeNode * new_node = new BPlusTreeNode();
 		int old_count = old_node->index_num;
 		int mid_index = old_count / 2;
+		if(old_node->parent == NULL)
+		{
+			this->root = new BPlusTreeNode();
+			this->root->is_leaf = false;
+			this->root->parent = NULL;
+			old_node->parent = this->root;
+			new_node->is_leaf = false;
+			new_node->parent = old_node->parent;
+			if (index < old_node->indexs[mid_index])
+			{
+				old_node->index_num = mid_index;
+				new_node->index_num = old_count - mid_index;
+				for (int i = 0; i < new_node->index_num; i++)
+				{
+					new_node->indexs[i] = old_node->indexs[i + mid_index];
+					new_node->pointers[i] = old_node->pointers[i + mid_index];
+				}
+				this->root->pointers[0] = old_node;
+				this->root->indexs[0] = old_node->indexs[old_node->index_num - 1];
+				this->root->pointers[1] = new_node;
+				this->root->indexs[1] = new_node->indexs[new_node->index_num - 1];
+				this->root->index_num = 2;
+				this->insert_in_node(old_node, index, child);
+			}
+			else
+			{
+				old_node->index_num = mid_index + 1;
+				new_node->index_num = old_count - mid_index - 1;
+				for (int i = 0; i < new_node->index_num; i++)
+				{
+					new_node->indexs[i] = old_node->indexs[i + mid_index + 1];
+					new_node->pointers[i] = old_node->pointers[i + mid_index + 1];
+				}
+				this->root->pointers[0] = old_node;
+				this->root->indexs[0] = old_node->indexs[old_node->index_num - 1];
+				this->root->pointers[1] = new_node;
+				this->root->indexs[1] = new_node->indexs[new_node->index_num - 1];
+				this->root->index_num = 2;
+				this->insert_in_node(new_node, index, child);
+			}
+			this->fix_node_parent(old_node);
+			this->fix_node_parent(new_node);
+			return;
+		}
 		new_node->is_leaf = false;
 		new_node->parent = old_node->parent;
 		if (index < old_node->indexs[mid_index])
@@ -118,6 +163,7 @@ private:
 			for (int i = 0; i < new_node->index_num; i++)
 			{
 				new_node->indexs[i] = old_node->indexs[i + mid_index + 1];
+				new_node->pointers[i] = old_node->pointers[i + mid_index + 1];
 			}
 			this->insert_in_node(new_node->parent, new_node->indexs[new_node->index_num - 1], new_node);
 			this->insert_in_node(new_node, index, child);
@@ -217,6 +263,7 @@ public:
 			this->root->indexs[0] = data.index;
 			this->root->pointers[0] = first_data_node;
 			this->root->index_num = 1;
+			this->start = first_data_node;
 			return true;
 		}
 		BPlusTreeBase * leaf = this->find_leaf(data.index);
