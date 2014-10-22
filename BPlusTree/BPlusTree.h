@@ -2,9 +2,13 @@
 #include <cstring>
 using namespace std;
 
-#define M 5
+#define M 2048
 #define L 5
 //在内存中建立一个数据文件，文件大小必须在500M以上，具体数据项自行决定，项数20M以上;
+//假设项数20M = 20 * 1024 * 1024，L = 5;
+//则满树分支为2^22;
+//m^h = (2^11)^2;
+//则M = 2048，理想高度为2;
 class BPlusTreeBase
 {
 public:
@@ -267,5 +271,19 @@ public:
 	BPlusTreeNode * getroot()//just for TMD test
 	{
 		return this->root;
+	}
+	int getheight()//just for TMD test
+	{
+		BPlusTreeBase * height_calculator = this->root;
+		int height = 0;
+		while (height_calculator)
+		{
+			height++;
+			if (height_calculator->is_leaf)
+				break;
+			else
+				height_calculator = ((BPlusTreeNode*)height_calculator)->pointers[0];
+		}
+		return height;
 	}
 };
