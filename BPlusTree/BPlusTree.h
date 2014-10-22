@@ -54,7 +54,9 @@ private:
 				}
 			}
 			if (i == finder->index_num)
+			{
 				finder = ((BPlusTreeNode*)finder)->pointers[i - 1];
+			}
 		}
 		return finder;
 	}
@@ -213,7 +215,9 @@ private:
 	void fix_node_parent(BPlusTreeNode *& actual_node)
 	{
 		if (actual_node->parent == NULL)
+		{
 			return;
+		}
 		for (int i = 0; i < actual_node->parent->index_num; i++)
 		{
 			if ((actual_node->parent)->pointers[i] == actual_node)
